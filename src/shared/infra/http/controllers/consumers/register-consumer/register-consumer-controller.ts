@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 
 import { RegisterConsumerUseCase } from "@/modules/consumers/use-cases/register-consumer/register-consumer-use-case";
+import { IncorrectConsumerRegisterDataError } from "@/modules/consumers/errors/incorrect-consumer-register-data-error";
 
 const registerConsumerBodySchema = z.object({
   email: z.string().email({ message: "E-mail mal formatado." }),
@@ -21,7 +22,11 @@ class RegisterConsumerController {
         message: "Consumer added successfully.",
       });
     } catch (e: any) {
-      response.status(e.status || e.statusCode).json({
+      if (e instanceof ZodError) {
+        throw new IncorrectConsumerRegisterDataError();
+      }
+
+      return response.status(e.status || e.statusCode).json({
         message: e.message,
       });
     }

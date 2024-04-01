@@ -1,3 +1,12 @@
+# Override
+temp/**/*
+tmp/**/*
+*.png
+*.PNG
+*.jpg
+*.jpeg
+*.csv
+
 # Logs
 logs
 *.log
